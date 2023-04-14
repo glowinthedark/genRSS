@@ -105,7 +105,7 @@ def get_duration_ffprobe(filename):
             return None
 
 
-def file_to_item(host, fname, pub_date, use_metadata=False):
+def file_to_item(host, fname, pub_date, use_metadata=False, verbose=False):
     """
     Inspect a file name to determine what kind of RSS item to build, and
     return the built item.
@@ -179,6 +179,9 @@ def file_to_item(host, fname, pub_date, use_metadata=False):
               </item>
 
     """
+    if verbose:
+        print(f'Extracting metadata for {fname}...', file=sys.stderr)
+
     file_URL = urllib.parse.quote(host + fname.replace("\\", "/"), ":/")
     file_mime_type = mimetypes.guess_type(fname)[0]
 

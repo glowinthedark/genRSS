@@ -231,6 +231,8 @@ def main(argv=None):
             )
             sys.exit(0)
 
+        if opts.verbose:
+            print('Sorting files...', file=sys.stderr)
         if opts.sort_creation:
             # sort files by date of creation if required
             # get files date of creation in seconds
@@ -266,7 +268,7 @@ def main(argv=None):
 
         # build items
         items = [
-            file_to_item(host, fname, pub_date, opts.use_metadata)
+            file_to_item(host, fname, pub_date, opts.use_metadata, opts.verbose)
             for fname, pub_date in sorted_files
         ]
 
