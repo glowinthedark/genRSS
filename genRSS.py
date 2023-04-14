@@ -180,18 +180,21 @@ def main(argv=None):
             raise Exception(
                 "\n".join(
                     [
-                        "Cannot find directory {0}",
+                        f"Cannot find directory {opts.dirname}",
                         "--dirname must be a path to an existing directory",
                     ]
-                ).format(opts.dirname)
+                )
             )
 
         dirname = opts.dirname
+
         if dirname[-1] != os.sep:
             dirname += os.sep
+
         host = opts.host
-        if host[-1] != "/":
-            host += "/"
+
+        # if host[-1] != "/":
+        #     host += "/"
 
         if not host.lower().startswith(
             "http://"
@@ -201,11 +204,12 @@ def main(argv=None):
         title = ""
         description = ""
         link = host
+
         if opts.outfile is not None:
-            if link[-1] == "/":
-                link += opts.outfile
-            else:
-                link += "/" + opts.outfile
+            # if link[-1] == "/":
+            link += opts.outfile
+            # else:
+            #     link += "/" + opts.outfile
 
         if opts.title is None:
             title = os.path.split(dirname[:-1])[-1]
@@ -277,15 +281,13 @@ def main(argv=None):
         )
         outfp.write("   <channel>\n")
         outfp.write(
-            '      <atom:link href="{0}" rel="self" type="application/rss+xml" />\n'.format(
-                link
-            )
+            f'      <atom:link href="{link}" rel="self" type="application/rss+xml" />\n'
         )
-        outfp.write("      <title>{0}</title>\n".format(saxutils.escape(title)))
+        outfp.write(f"      <title>{saxutils.escape(title)}</title>\n")
         outfp.write(
-            "      <description>{0}</description>\n".format(description)
+            f"      <description>{description}</description>\n"
         )
-        outfp.write("      <link>{0}</link>\n".format(link))
+        outfp.write(f"      <link>{link}</link>\n")
 
         if opts.image is not None:
             if opts.image.lower().startswith(
