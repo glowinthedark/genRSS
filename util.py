@@ -1,7 +1,8 @@
 import subprocess
 import mimetypes
 import sys
-import urllib
+from pathlib import Path
+from urllib.parse import quote
 import os
 import glob
 import fnmatch
@@ -180,7 +181,7 @@ def file_to_item(host, fname, pub_date, use_metadata=False, verbose=False):
 
     """
 
-    file_URL = urllib.parse.quote(host + fname.replace("\\", "/"), ":/")
+    file_URL = f'{host}{quote(fname)}'
     file_mime_type = mimetypes.guess_type(fname)[0]
 
     if file_mime_type is not None and (
@@ -195,7 +196,7 @@ def file_to_item(host, fname, pub_date, use_metadata=False, verbose=False):
     else:
         enclosure = None
 
-    title = get_title(fname, use_metadata)
+    title = get_title(fname, use_metadata) or Path(fname).name
 
     if verbose:
         print(f'Title: {title} ({fname})', file=sys.stderr)
