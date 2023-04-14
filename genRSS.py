@@ -269,7 +269,7 @@ def main(argv=None):
         # build items
         items = [
             file_to_item(host, fname, pub_date, opts.use_metadata, opts.verbose)
-            for fname, pub_date in sorted_files if fname
+            for fname, pub_date in sorted_files
         ]
 
         if opts.outfile is not None:
@@ -277,26 +277,21 @@ def main(argv=None):
         else:
             outfp = sys.stdout
 
-        outfp.write('<?xml version="1.0" encoding="UTF-8"?>\n')
-        outfp.write(
-            '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">\n'
-        )
-        outfp.write("   <channel>\n")
-        outfp.write(
-            f'      <atom:link href="{link}" rel="self" type="application/rss+xml" />\n'
-        )
-        outfp.write(f"      <title>{saxutils.escape(title)}</title>\n")
-        outfp.write(
-            f"""    <description>{description}</description>
-    <itunes:author>Local Host</itunes:author>
-    <itunes:summary>Local Host #127</itunes:summary>
-    <itunes:owner>
-      <itunes:name>Local Host</itunes:name>
-      <itunes:email>local@host.com</itunes:email>
-    </itunes:owner>
-    <itunes:image href="https://www.apple.com/v/apple-podcasts/c/images/overview/hero_icon__c135x5gz14mu_large.png" />
-""")
-        outfp.write(f"      <link>{link}</link>\n")
+        outfp.write(f'''<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+   <channel>
+      <atom:link href="{link}" rel="self" type="application/rss+xml"/>
+      <title>{saxutils.escape(title)}</title>
+      <description>{description}</description>
+      <itunes:author>Local Host</itunes:author>
+      <itunes:summary>Local Summary Host</itunes:summary>
+      <itunes:owner>
+       <itunes:name>Local Name</itunes:name>
+       <itunes:email>local@host.com</itunes:email>
+      </itunes:owner>
+      <itunes:image href="https://www.apple.com/v/apple-podcasts/c/images/overview/hero_icon__c135x5gz14mu_large.png"/>
+      <link>{link}</link>
+''')
 
         if opts.image is not None:
             if opts.image.lower().startswith(
@@ -306,21 +301,21 @@ def main(argv=None):
             else:
                 imgurl = urllib.parse.quote(host + opts.image, ":/")
 
-            outfp.write("      <image>\n")
-            outfp.write("         <url>{0}</url>\n".format(imgurl))
-            outfp.write(
-                "         <title>{0}</title>\n".format(saxutils.escape(title))
-            )
-            outfp.write("         <link>{0}</link>\n".format(link))
-            outfp.write("      </image>\n")
+            outfp.write("""
+    <image>
+      <url>{imgurl}</url>
+      <title>{saxutils.escape(title)}</title>
+      <link>{link}</link>
+    </image>
+""")
 
         for item in items:
             outfp.write(item + "\n")
 
-        outfp.write("")
-        outfp.write("   </channel>\n")
-        outfp.write("</rss>\n")
-
+        outfp.write("""
+    </channel>
+</rss>
+""")
         if outfp != sys.stdout:
             outfp.close()
 
@@ -328,7 +323,7 @@ def main(argv=None):
                 print(f'Wrote {outfp.name}', file=sys.stderr)
 
     except Exception as e:
-        sys.stderr.write(str(e) + "\n")
+        print(str(e), file=sys.stderr, flush=True)
         return 2
 
 

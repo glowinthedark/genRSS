@@ -49,7 +49,8 @@ def get_duration_mutagen(filename):
     if _MUTAGEN:
         try:
             file = mutagen.File(filename)
-        except mutagen.mp3.HeaderNotFoundError:
+        except Exception as e:
+            print(str(e), file=sys.stderr, flush=True)
             return None
         if file is not None:
             return round(file.info.length)
@@ -196,7 +197,14 @@ def file_to_item(host, fname, pub_date, use_metadata=False, verbose=False):
     else:
         enclosure = None
 
-    title = get_title(fname, use_metadata) or Path(fname).name
+    title = None
+    try:
+        title = get_title(fname, use_metadata)
+    except Exception as e:
+        print(str(e), file=sys.stderr)
+
+    if title is None:
+        title = Path(fname).stem
 
     if verbose:
         print(f'Title: {title} ({fname})', file=sys.stderr)
@@ -264,13 +272,15 @@ def get_title(filename, use_metadata=False):
                 title = easyid3.EasyID3(filename)["title"]
                 if title:
                     return title[0]
-            except (id3.ID3NoHeaderError, KeyError):
+            except Exception as e:
+                print(str(e), file=sys.stderr)
                 try:
                     # file with MP4 tags
                     title = easymp4.EasyMP4(filename)["title"]
                     if title:
                         return title[0]
-                except (mp4.MP4StreamInfoError, KeyError):
+                except Exception as e:
+                    print(str(e), file=sys.stderr)
                     try:
                         # other media types
                         meta = mutagen.File(filename)
@@ -278,7 +288,8 @@ def get_title(filename, use_metadata=False):
                             title = meta["title"]
                             if title:
                                 return title[0]
-                    except (KeyError, HeaderNotFoundError):
+                    except Exception as e:
+                        print(str(e), file=sys.stderr)
                         pass
         except ImportError:
             pass
