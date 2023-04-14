@@ -269,7 +269,7 @@ def main(argv=None):
         # build items
         items = [
             file_to_item(host, fname, pub_date, opts.use_metadata, opts.verbose)
-            for fname, pub_date in sorted_files
+            for fname, pub_date in sorted_files if fname
         ]
 
         if opts.outfile is not None:
