@@ -285,8 +285,15 @@ def main(argv=None):
         )
         outfp.write(f"      <title>{saxutils.escape(title)}</title>\n")
         outfp.write(
-            f"      <description>{description}</description>\n"
-        )
+            f"""    <description>{description}</description>
+    <itunes:author>Local Host</itunes:author>
+    <itunes:summary>Local Host #127</itunes:summary>
+    <itunes:owner>
+      <itunes:name>Local Host</itunes:name>
+      <itunes:email>local@host.com</itunes:email>
+    </itunes:owner>
+    <itunes:image href="https://www.apple.com/v/apple-podcasts/c/images/overview/hero_icon__c135x5gz14mu_large.png" />
+""")
         outfp.write(f"      <link>{link}</link>\n")
 
         if opts.image is not None:
