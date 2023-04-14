@@ -179,8 +179,6 @@ def file_to_item(host, fname, pub_date, use_metadata=False, verbose=False):
               </item>
 
     """
-    if verbose:
-        print(f'Extracting metadata for {fname}...', file=sys.stderr)
 
     file_URL = urllib.parse.quote(host + fname.replace("\\", "/"), ":/")
     file_mime_type = mimetypes.guess_type(fname)[0]
@@ -198,6 +196,9 @@ def file_to_item(host, fname, pub_date, use_metadata=False, verbose=False):
         enclosure = None
 
     title = get_title(fname, use_metadata)
+
+    if verbose:
+        print(f'Title: {title} ({fname})', file=sys.stderr)
 
     tags = [enclosure]
     duration = get_duration(fname)
