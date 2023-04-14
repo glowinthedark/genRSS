@@ -223,7 +223,7 @@ def main(argv=None):
         if opts.extensions is not None:
             opts.extensions = [e for e in opts.extensions.split(",") if e != ""]
         file_names = get_files(
-            dirname, extensions=opts.extensions, recursive=opts.recursive
+            dirname, extensions=opts.extensions, recursive=opts.recursive, verbose=opts.verbose
         )
         if len(file_names) == 0:
             sys.stderr.write(
@@ -321,6 +321,9 @@ def main(argv=None):
 
         if outfp != sys.stdout:
             outfp.close()
+
+            if opts.verbose:
+                print(f'Wrote {outfp.name}', file=sys.stderr)
 
     except Exception as e:
         sys.stderr.write(str(e) + "\n")

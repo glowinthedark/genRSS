@@ -1,5 +1,6 @@
 import subprocess
 import mimetypes
+import sys
 import urllib
 import os
 import glob
@@ -472,7 +473,7 @@ def build_item(
     )
 
 
-def get_files(dirname, extensions=None, recursive=False):
+def get_files(dirname, extensions=None, recursive=False, verbose=False):
     """
     Return the list of files (relative paths, starting from dirname) in a given directory.
 
@@ -532,7 +533,10 @@ def get_files(dirname, extensions=None, recursive=False):
     if recursive:
         for root, dirs, filenames in os.walk(dirname):
             for name in filenames:
-                all_files.append(os.path.join(root, name))
+                abs_path = os.path.join(root, name)
+                all_files.append(abs_path)
+                if verbose:
+                    print(f'{abs_path}', file=sys.stderr)
     else:
         all_files = [f for f in glob.glob(dirname + "*") if os.path.isfile(f)]
 
